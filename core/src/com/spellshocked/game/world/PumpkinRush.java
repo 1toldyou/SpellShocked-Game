@@ -3,6 +3,7 @@ package com.spellshocked.game.world;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -12,7 +13,6 @@ import com.spellshocked.game.entity.Entity;
 import com.spellshocked.game.entity.PlayerEntity;
 import com.spellshocked.game.entity.PumpkinSkeletonEntity;
 import com.spellshocked.game.entity.SkeletonEntity;
-import com.spellshocked.game.gui.BlockInventoryGUI;
 import com.spellshocked.game.gui.ClickGUI;
 import com.spellshocked.game.input.ConditionalRunnable;
 import com.spellshocked.game.input.FunctionalInput;
@@ -20,7 +20,6 @@ import com.spellshocked.game.input.InputScheduler;
 import com.spellshocked.game.input.action.AttackAction;
 import com.spellshocked.game.input.action.ConsumeAction;
 import com.spellshocked.game.input.action.PlaceAction;
-import com.spellshocked.game.world.obstacle.Chest;
 import com.spellshocked.game.world.obstacle.ObstacleEntity;
 import com.spellshocked.game.world.obstacle.Pumpkin;
 
@@ -42,7 +41,7 @@ public class PumpkinRush extends World{
     float[][] perlinNoise;
 
     float player_health = 1;//0 = dead, 1 = full health
-    Texture healthbarTexture;
+    Texture healthBarTexture;
     long worldTimer;
     long startTime;
     TextButton score_Label;
@@ -71,11 +70,12 @@ public class PumpkinRush extends World{
         startTime = System.currentTimeMillis();
         score_Label = new TextButton(String.format("%03d", worldTimer), new Skin(Gdx.files.internal("pixthulhu/skin/pixthulhu-ui.json")));
         score_Label.getLabel().setFontScale(0.5f, 0.5f);
-        stage.addActor(score_Label);
+        score_Label.setSize(140,70);
+//        stage.addActor(score_Label);
         activeStages.put(stage, true);
 
         create_Tile_with_Perlin(this.perlinNoise);
-        healthbarTexture = new Texture("image/World/healthBars/healthBarGreen.png");
+        healthBarTexture = new Texture("image/World/healthBars/healthBarGreen.png");
 
         for (Pumpkin p : pumpkins) {
 
@@ -200,9 +200,6 @@ public class PumpkinRush extends World{
 
         super.render(delta);
         spriteBatch.begin();
-        score_Label.setText(String.valueOf((int) score_counter));
-        score_Label.setPosition(orthographicCamera.position.x+230, orthographicCamera.position.y+120);
-        score_Label.setSize(140,70);
         if(player.obstacleNear() != null && Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
             ArrayList<Tile> tiles = player.obstacleNear();
 
@@ -238,10 +235,10 @@ public class PumpkinRush extends World{
                     }
                 //(Math.abs(e.getX()- ((PumpkinSheepEntity) e).getPumpkin().getPumpkinX())<200 &&
                 //                        Math.abs(e.getY()-((PumpkinSheepEntity) e).getPumpkin().getPumpkinY())<200 &&
-                if(e.isAtTarget(player)) player.modifyHealth(-2);
+                if(e.isAtTarget(player)) player.modifyHealth(-0.1);
                 e.drawHealthBar(player, this);
-                if (player.getRect().collidesWith(((SkeletonEntity) e).getRect())){
-                    player_health -= 0.001;
+                if (player.getRect().collidesWith(e.getRect())){
+//                    player_health -= 0.001;
                 }
                 if (e.health <= 0) {
                     enemies_counter--;
@@ -254,23 +251,30 @@ public class PumpkinRush extends World{
 
         if (player_health < 0){
             Spellshocked.getInstance().dieGUI.reason.setText("you ran out of HP");
+            Spellshocked.getInstance().dieGUI.setTexture(SkeletonEntity.TEXTURES[0][0]);
             Spellshocked.getInstance().setScreen(Spellshocked.getInstance().dieGUI);
+            Spellshocked.getInstance().dieGUI.time_value.setText((System.currentTimeMillis()-startTime)/1000+"");
+            player.health = 1;
         }
         if (enemies_counter < 0){
+            Spellshocked.getInstance().dieGUI.setTexture(new TextureRegion(new Texture("image/World/Object/pumpkin.png")));
             Spellshocked.getInstance().dieGUI.reason.setText("you eliminate all enemies");
             Spellshocked.getInstance().setScreen(Spellshocked.getInstance().dieGUI);
+            Spellshocked.getInstance().dieGUI.time_value.setText((System.currentTimeMillis()-startTime)/1000+"");
         }
 
 
-        super.spriteBatch.draw(healthbarTexture, orthographicCamera.position.x-350,
-                orthographicCamera.position.y-orthographicCamera.zoom*-400,
-                (healthbarTexture.getWidth()* player_health)/4, healthbarTexture.getHeight()/4f);
-        super.spriteBatch.draw(healthBarBorder, orthographicCamera.position.x-350,
-                orthographicCamera.position.y-orthographicCamera.zoom*-400,
-                (healthbarTexture.getWidth())/4f, healthbarTexture.getHeight()/4f);
-        super.spriteBatch.draw(healthBarBorder, orthographicCamera.position.x,
-                orthographicCamera.position.y+160,
-                (healthbarTexture.getWidth())/4f, healthbarTexture.getHeight()/4f);
+        super.spriteBatch.draw(healthBarTexture, orthographicCamera.position.x-Gdx.graphics.getWidth()/6f,
+                orthographicCamera.position.y-orthographicCamera.zoom*-400-Gdx.graphics.getHeight()/25f,
+                (healthBarTexture.getWidth()*player.health)/40, healthBarTexture.getHeight()/4f);
+        super.spriteBatch.draw(healthBarBorder, orthographicCamera.position.x-Gdx.graphics.getWidth()/6f,
+                orthographicCamera.position.y-orthographicCamera.zoom*-400-Gdx.graphics.getHeight()/25f,
+                (healthBarTexture.getWidth())/4f, healthBarTexture.getHeight()/4f);
+
+        score_Label.setText(String.valueOf((int) score_counter));
+        score_Label.setPosition(orthographicCamera.position.x-score_Label.getWidth()/2, orthographicCamera.position.y-orthographicCamera.zoom*-400-Gdx.graphics.getHeight()/15f);
+        score_Label.draw(super.spriteBatch, 1f);
+
         spriteBatch.end();
         score_counter += 1f/60f;
     }

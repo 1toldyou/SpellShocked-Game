@@ -69,7 +69,8 @@ public class ShockWaveMode extends World{
         startTime = System.currentTimeMillis();
         score_Label = new TextButton(String.format("%03d", worldTimer), new Skin(Gdx.files.internal("pixthulhu/skin/pixthulhu-ui.json")));
         score_Label.getLabel().setFontScale(0.5f, 0.5f);
-        stage.addActor(score_Label);
+        score_Label.setSize(140,70);
+//        stage.addActor(score_Label);
         activeStages.put(stage, true);
 
         create_Tile_with_Perlin(this.perlinNoise);
@@ -183,9 +184,7 @@ public class ShockWaveMode extends World{
 
         super.render(delta);
         spriteBatch.begin();
-        score_Label.setText(String.valueOf((int) score_counter));
-        score_Label.setPosition(orthographicCamera.position.x+230, orthographicCamera.position.y+120);
-        score_Label.setSize(140,70);
+
         for (Entity e: entities){
             if (e instanceof SkeletonEntity || e instanceof SlimeEntity){
                 (e).getRect().move(e.getX(), e.getY());
@@ -211,12 +210,16 @@ public class ShockWaveMode extends World{
 
         if (player.health<=0){
             Spellshocked.getInstance().dieGUI.reason.setText("you ran out of HP");
+            Spellshocked.getInstance().dieGUI.setTexture(SkeletonEntity.TEXTURES[0][0]);
             Spellshocked.getInstance().setScreen(Spellshocked.getInstance().dieGUI);
-           player.health = 1;
+            Spellshocked.getInstance().dieGUI.time_value.setText((System.currentTimeMillis()-startTime)/1000+"");
+            player.health = 1;
         }
         if (wave_counter > 3 && enemies_counter <= 0){
+            Spellshocked.getInstance().dieGUI.setTexture(PlayerEntity.TEXTURES[0][0]);
             Spellshocked.getInstance().dieGUI.reason.setText("you played enough waves");
             Spellshocked.getInstance().setScreen(Spellshocked.getInstance().dieGUI);
+            Spellshocked.getInstance().dieGUI.time_value.setText((System.currentTimeMillis()-startTime)/1000+"");
         }
 
         increase_raid = enemies_counter < 3;
@@ -231,19 +234,23 @@ public class ShockWaveMode extends World{
             wave(1);
         }
 
-        super.spriteBatch.draw(healthBarTexture, orthographicCamera.position.x-350,
-                    orthographicCamera.position.y-orthographicCamera.zoom*-400,
+
+        super.spriteBatch.draw(healthBarTexture, orthographicCamera.position.x-Gdx.graphics.getWidth()/6f,
+                    orthographicCamera.position.y-orthographicCamera.zoom*-400-Gdx.graphics.getHeight()/25f,
                     (healthBarTexture.getWidth()* player.health)/40, healthBarTexture.getHeight()/4f);
-        super.spriteBatch.draw(healthBarBorder, orthographicCamera.position.x-350,
-                orthographicCamera.position.y-orthographicCamera.zoom*-400,
+        super.spriteBatch.draw(healthBarBorder, orthographicCamera.position.x-Gdx.graphics.getWidth()/6f,
+                orthographicCamera.position.y-orthographicCamera.zoom*-400-Gdx.graphics.getHeight()/25f,
                 (healthBarTexture.getWidth())/4f, healthBarTexture.getHeight()/4f);
 
-        super.spriteBatch.draw(healthBarTexture, orthographicCamera.position.x,
-                orthographicCamera.position.y+160,
+        super.spriteBatch.draw(healthBarTexture, orthographicCamera.position.x+Gdx.graphics.getWidth()/6f-healthBarTexture.getWidth()/4f,
+                orthographicCamera.position.y-orthographicCamera.zoom*-400-Gdx.graphics.getHeight()/25f,
                 (healthBarTexture.getWidth()*raid_counter)/4, healthBarTexture.getHeight()/4f);
-        super.spriteBatch.draw(healthBarBorder, orthographicCamera.position.x,
-                orthographicCamera.position.y+160,
+        super.spriteBatch.draw(healthBarBorder, orthographicCamera.position.x+Gdx.graphics.getWidth()/6f-healthBarTexture.getWidth()/4f,
+                orthographicCamera.position.y-orthographicCamera.zoom*-400-Gdx.graphics.getHeight()/25f,
                 (healthBarTexture.getWidth())/4f, healthBarTexture.getHeight()/4f);
+        score_Label.setText(String.valueOf((int) score_counter));
+        score_Label.setPosition(orthographicCamera.position.x-score_Label.getWidth()/2, orthographicCamera.position.y-orthographicCamera.zoom*-400-Gdx.graphics.getHeight()/15f);
+        score_Label.draw(super.spriteBatch, 1f);
         spriteBatch.end();
         if (player.getTile() != null){
             switch (player.getTile().name) {

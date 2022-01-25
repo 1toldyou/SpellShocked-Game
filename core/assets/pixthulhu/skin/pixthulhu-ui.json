@@ -24,9 +24,9 @@ com.badlogic.gdx.graphics.Color: {
 		a: 1
 	}
 	field: {
-		r: 0.5058824
+		r: 0.9137255
 		g: 0.9372549
-		b: 0.9137255
+		b: 0.5058824
 		a: 1
 	}
 	highlight: {
