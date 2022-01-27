@@ -29,3 +29,7 @@ jobs:
       uses: gradle/gradle-build-action@4137be6a8bf7d7133955359dbd952c0ca73b1021
       with:
         arguments: desktop:dist
+    - name: Upload the jar
+      uses: actions/upload-artifact@v2.3.1
+      with:
+        path: desktop/build/libs/desktop-1.0.jar
