@@ -253,7 +253,7 @@ public class PumpkinRush extends World{
             Spellshocked.getInstance().dieGUI.time_value.setText((System.currentTimeMillis()-startTime)/1000+"");
             player.health = 10;
         }
-        if (enemies_counter < 0){
+        if (enemies_counter <= 0){
             Spellshocked.getInstance().dieGUI.setTexture(new TextureRegion(new Texture("image/World/Object/pumpkin.png")));
             Spellshocked.getInstance().dieGUI.reason.setText("you eliminate all enemies");
             Spellshocked.getInstance().setScreen(Spellshocked.getInstance().dieGUI);
