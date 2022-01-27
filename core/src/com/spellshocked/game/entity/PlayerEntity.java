@@ -58,6 +58,7 @@ public class PlayerEntity extends Entity {
         if((getLastDirection() == Direction.DOWN || getLastDirection() == Direction.RIGHT) && hotbar.getActiveSlot() != null) hotbar.getActiveSlot().drawInHand(batch, this);
         //hotbar.draw(batch, ortCam.position.x-144, ortCam.position.y-ortCam.zoom*400);
     }
+    long damageTime = 0;
     public TextureRegion[] parseWalkingSheetRow(TextureRegion[] t) {
         return new TextureRegion[]{t[0], t[1], t[0], t[2]};
     }
@@ -74,12 +75,24 @@ public class PlayerEntity extends Entity {
         return hotbar;
     }
 
-    @Override
-    public void onDeath() {
-        super.onDeath();
-    }
     public CollisionRect getRect(){ return rect;}
     public OrthographicCamera getOrtCam(){
         return ortCam;
+    }
+
+    @Override
+    public void modifyHealth(double change) {
+        if(System.currentTimeMillis()-damageTime-500 < 0) return;
+        super.modifyHealth(change);
+        if(change < 0){
+            damageTime = System.currentTimeMillis();
+        }
+    }
+
+    @Override
+    public void periodic() {
+        if(System.currentTimeMillis()-damageTime-100 < 0) setRegion(TEXTURES[getLastDirection().index][3]);
+        else setRegion(TEXTURES[getLastDirection().index][0]);
+        super.periodic();
     }
 }

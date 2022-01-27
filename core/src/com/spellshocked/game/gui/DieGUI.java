@@ -17,8 +17,8 @@ public class DieGUI extends GUI{
 
     public void setTexture(TextureRegion s){
         Image wand = new Image(s);
-        wand.setSize((Gdx.graphics.getWidth()/10f), (Gdx.graphics.getHeight()/7f));
-        wand.setPosition((Gdx.graphics.getWidth()/4f), (Gdx.graphics.getHeight()/1.43f));
+        wand.setScale(10f);
+        wand.setPosition((Gdx.graphics.getWidth()/4f), (Gdx.graphics.getHeight()/1.7f));
         addActor(wand);
     }
 

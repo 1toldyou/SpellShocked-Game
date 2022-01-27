@@ -196,7 +196,7 @@ public class ShockWaveMode extends World{
                 }
                 e.drawHealthBar(player, this);
                 if (player.getRect().collidesWith(e.getRect())){
-                    player.health-=0.01;
+                    player.modifyHealth(-2);
                 }
                 if (e.health <= 0) {
                     enemies_counter--;
@@ -213,7 +213,7 @@ public class ShockWaveMode extends World{
             Spellshocked.getInstance().dieGUI.setTexture(SkeletonEntity.TEXTURES[0][0]);
             Spellshocked.getInstance().setScreen(Spellshocked.getInstance().dieGUI);
             Spellshocked.getInstance().dieGUI.time_value.setText((System.currentTimeMillis()-startTime)/1000+"");
-            player.health = 1;
+            player.health = 10;
         }
         if (wave_counter > 3 && enemies_counter <= 0){
             Spellshocked.getInstance().dieGUI.setTexture(PlayerEntity.TEXTURES[0][0]);

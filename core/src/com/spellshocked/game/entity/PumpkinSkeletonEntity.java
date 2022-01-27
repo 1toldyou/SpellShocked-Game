@@ -13,9 +13,6 @@ public class PumpkinSkeletonEntity extends SkeletonEntity{
     public Pumpkin getPumpkin(){
         return pumpkin;
     }
-    public boolean isInAttackRange(){
-        return getTile().distanceFrom(pumpkin.tile) < 10;
-    }
     public void setPumpkin(Pumpkin pumpkinNew){
         pumpkin = pumpkinNew;
     }

@@ -24,31 +24,31 @@ public class TitleGUI extends GUI {
         chooseMode.setPosition((Gdx.graphics.getWidth()/8f), (Gdx.graphics.getHeight()/1.92f));
         addActor(chooseMode);
 
-        TextButton leaderboard = new TextButton("Leaderboard", skin);
-        leaderboard.addListener(new ClickListener(){
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                System.out.println("Unfortunately we don't have one right now");
-            }
-        });
-//        leaderboard.setSize(1443.6f, 212.5f);
-//        leaderboard.setPosition(240f, 286.875f);
-        leaderboard.setSize((Gdx.graphics.getWidth()/1.33f), (Gdx.graphics.getHeight()/4.8f));
-        leaderboard.setPosition((Gdx.graphics.getWidth()/8f), (Gdx.graphics.getHeight()/3.555f));
-        addActor(leaderboard);
-
-        TextButton setting = new TextButton("Settings", skin);
-        setting.addListener(new ClickListener(){
+        TextButton settings = new TextButton("Settings", skin);
+        settings.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 Spellshocked.getInstance().setScreen(Spellshocked.getInstance().settingsGUI);
             }
         });
+//        leaderboard.setSize(1443.6f, 212.5f);
+//        leaderboard.setPosition(240f, 286.875f);
+        settings.setSize((Gdx.graphics.getWidth()/1.33f), (Gdx.graphics.getHeight()/4.8f));
+        settings.setPosition((Gdx.graphics.getWidth()/8f), (Gdx.graphics.getHeight()/3.555f));
+        addActor(settings);
+
+        TextButton credits = new TextButton("Credits", skin);
+        credits.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Spellshocked.getInstance().setScreen(Spellshocked.getInstance().creditsGUI);
+            }
+        });
 //        setting.setSize(662f, 212.5f);
 //        setting.setPosition(240f, 42.5f);
-        setting.setSize((Gdx.graphics.getWidth()/2.9f), (Gdx.graphics.getHeight()/4.8f));
-        setting.setPosition((Gdx.graphics.getWidth()/8f), (Gdx.graphics.getHeight()/24f));
-        addActor(setting);
+        credits.setSize((Gdx.graphics.getWidth()/2.9f), (Gdx.graphics.getHeight()/4.8f));
+        credits.setPosition((Gdx.graphics.getWidth()/8f), (Gdx.graphics.getHeight()/24f));
+        addActor(credits);
 
         TextButton quit = new TextButton("Quit", skin);
         quit.addListener(new ClickListener(){

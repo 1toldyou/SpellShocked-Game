@@ -90,7 +90,7 @@ public abstract class Entity extends Sprite {
         lastAction = State.IDLE;
         lastDirection = Direction.UP;
         stateTime = 0f;
-        rect = new CollisionRect(this.getX(), this.getY(), (int)this.getWidth(), (int) this.getHeight());
+        rect = new CollisionRect(getX(), getY(), getRegionWidth(), getRegionHeight());
     }
  
     public float getWalkSpeed() {
@@ -114,7 +114,7 @@ public abstract class Entity extends Sprite {
             if(yMax > y && y > yMin && (((y+3)%12 > walkSpeed || tile.front.isStandable() || y>newY) && ((y+3)%12 < 12- walkSpeed || tile.back.isStandable() || y<newY)) && dir.yMod!=0) newY = y;
         } else {
             lastAction = State.IDLE;
-            t = textures[3][lastDirection.index];
+            t = textures[0][lastDirection.index];
         }
         if(t != null) setRegion(t);
         play_walk_sound();

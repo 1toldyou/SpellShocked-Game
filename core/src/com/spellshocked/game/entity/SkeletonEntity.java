@@ -14,19 +14,11 @@ public class SkeletonEntity extends Entity implements Hostile{
         super(TEXTURES, WALKSPEED);
         setSize(0.34f, 0.5f);
         setPosition(250, 120);
-        sheepControls();
-        rect = new CollisionRect(getX(), getY(), getTexture().getWidth(), getTexture().getHeight());
+//        rect = new CollisionRect(getX(), getY(), getRegionWidth(), getRegionHeight());
         setRegion(TEXTURES[3][0]);
         health = 10;
     }
-    public void sheepControls() {
-//        FunctionalInput.fromKeyPress(Input.Keys.UP).onTrue(this::moveUp);
-//        FunctionalInput.fromKeyPress(Input.Keys.DOWN).onTrue(this::moveDown);
-//        FunctionalInput.fromKeyPress(Input.Keys.LEFT).onTrue(this::moveLeft);
-//        FunctionalInput.fromKeyPress(Input.Keys.RIGHT).onTrue(this::moveRight);
 
-        FunctionalInput.fromKeyJustPress(Input.Keys.L).onTrue(this::startMoving);
-    }
     public TextureRegion[] parseWalkingSheetRow(TextureRegion[] t) {
         return new TextureRegion[]{t[0], t[1], t[0], t[2]};
     }
@@ -38,7 +30,7 @@ public class SkeletonEntity extends Entity implements Hostile{
         }
         return a;
     }
-    public void update(){
+    public void attack(PlayerEntity p){
 
     }
 

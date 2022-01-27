@@ -31,7 +31,6 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class PumpkinRush extends World{
-    final static long mapSeed = 10000000;
     Random randomSeed;
 
     private PlayerEntity player;
@@ -40,14 +39,13 @@ public class PumpkinRush extends World{
 
     float[][] perlinNoise;
 
-    float player_health = 1;//0 = dead, 1 = full health
-    Texture healthBarTexture;
     long worldTimer;
     long startTime;
     TextButton score_Label;
     protected Stage stage;
 
     public Texture healthBarBorder = new Texture("image/World/healthBars/healthBarBorder.png");
+    public Texture healthBarTexture = new Texture("image/World/healthBars/healthBarGreen.png");
 
     float score_counter = 0;
     int enemies_counter = 0;
@@ -58,7 +56,7 @@ public class PumpkinRush extends World{
 
     public PumpkinRush() {
         super(100, 64, 64, 400, 240);
-        this.randomSeed = new Random(this.mapSeed);
+        this.randomSeed = new Random();
         this.perlinNoise = GeneratePerlinNoise(GenerateSmoothNoise(GenerateWhiteNoise(this.randomSeed, super.xValue + 1, super.yValue + 1), 4), 6);
 
         this.player = new PlayerEntity(2);
@@ -75,7 +73,6 @@ public class PumpkinRush extends World{
         activeStages.put(stage, true);
 
         create_Tile_with_Perlin(this.perlinNoise);
-        healthBarTexture = new Texture("image/World/healthBars/healthBarGreen.png");
 
         for (Pumpkin p : pumpkins) {
 
@@ -155,7 +152,7 @@ public class PumpkinRush extends World{
                 if (super.tiles[j][i].Obstacle_onTop){
                     if (randomSeed.nextInt(273) < 1){
 
-                        if (numofPumpkins <10) {
+                        if (numofPumpkins < 10) {
                             Pumpkin pumpkin = new Pumpkin(player, tiles[j][i]);
                             tiles[j][i].setObstacle(pumpkin);
                             pumpkins[numofPumpkins] = pumpkin;
@@ -224,37 +221,37 @@ public class PumpkinRush extends World{
                         }
                     } else {
 
-                        if (player.getTile() != null && player.getTile().distanceFrom(((PumpkinSkeletonEntity) e).getPumpkin().tile) < 10) {
+                        if (player.getTile() != null && player.getTile().distanceFrom(((PumpkinSkeletonEntity) e).getPumpkin().tile) < 30) {
 //                    if ((Math.abs(e.getX()- player.getX())<200 &&Math.abs(e.getY()- player.getY())<200)&& ((PumpkinSkeletonEntity) e).isInAttackRange()){
                             e.targetTile(player.getTile());
                             e.startMoving();
-                        } else if (e.getTile().distanceFrom(((PumpkinSkeletonEntity) e).getPumpkin().tile) > 5) {
+                        } else if (e.getTile().distanceFrom(((PumpkinSkeletonEntity) e).getPumpkin().tile) > 3 && !e.isGoing) {
                             e.targetTile(((PumpkinSkeletonEntity) e).getPumpkin().tile);
                             e.startMoving();
                         }
                     }
                 //(Math.abs(e.getX()- ((PumpkinSheepEntity) e).getPumpkin().getPumpkinX())<200 &&
                 //                        Math.abs(e.getY()-((PumpkinSheepEntity) e).getPumpkin().getPumpkinY())<200 &&
-                if(e.isAtTarget(player)) player.modifyHealth(-0.1);
+//                if(e.isAtTarget(player)) player.modifyHealth(-0.1);
                 e.drawHealthBar(player, this);
                 if (player.getRect().collidesWith(e.getRect())){
-//                    player_health -= 0.001;
+                    player.modifyHealth(-2);
                 }
                 if (e.health <= 0) {
                     enemies_counter--;
                     super.removeEntity(e);
-                    score_counter+=114514;
+                    score_counter+=100;
                 }
             }
         }
         player.hotbar.draw(super.spriteBatch, orthographicCamera.position.x - 144, orthographicCamera.position.y - orthographicCamera.zoom * 400);
 
-        if (player_health < 0){
+        if (player.health <= 0){
             Spellshocked.getInstance().dieGUI.reason.setText("you ran out of HP");
             Spellshocked.getInstance().dieGUI.setTexture(SkeletonEntity.TEXTURES[0][0]);
             Spellshocked.getInstance().setScreen(Spellshocked.getInstance().dieGUI);
             Spellshocked.getInstance().dieGUI.time_value.setText((System.currentTimeMillis()-startTime)/1000+"");
-            player.health = 1;
+            player.health = 10;
         }
         if (enemies_counter < 0){
             Spellshocked.getInstance().dieGUI.setTexture(new TextureRegion(new Texture("image/World/Object/pumpkin.png")));
@@ -271,6 +268,25 @@ public class PumpkinRush extends World{
                 orthographicCamera.position.y-orthographicCamera.zoom*-400-Gdx.graphics.getHeight()/25f,
                 (healthBarTexture.getWidth())/4f, healthBarTexture.getHeight()/4f);
 
+        if (player.getTile() != null){
+            switch (player.getTile().name) {
+                case "grass":
+                    player.setWalkSpeed(1.5f);
+                    break;
+                case "sand":
+                    player.setWalkSpeed(1.0f);
+                    break;
+                case "lava":
+                    player.setWalkSpeed(1.25f);
+                    break;
+                case "water":
+                    player.setWalkSpeed(0.5f);
+                    break;
+                default:
+                    player.setWalkSpeed(1f);
+                    break;
+            }
+        }
         score_Label.setText(String.valueOf((int) score_counter));
         score_Label.setPosition(orthographicCamera.position.x-score_Label.getWidth()/2, orthographicCamera.position.y-orthographicCamera.zoom*-400-Gdx.graphics.getHeight()/15f);
         score_Label.draw(super.spriteBatch, 1f);
