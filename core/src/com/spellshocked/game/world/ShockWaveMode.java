@@ -78,7 +78,11 @@ public class ShockWaveMode extends World{
         FunctionalInput.fromButtonPress(Input.Buttons.LEFT).onTrue(new ConditionalRunnable(new AttackAction(player), ()-> !InputScheduler.getInstance().buttonPressedThisLoop.getOrDefault(Input.Buttons.LEFT, false)));
         FunctionalInput.fromButtonJustPress(Input.Buttons.LEFT).onTrue(new ConditionalRunnable(new ConsumeAction(player), ()-> !InputScheduler.getInstance().buttonPressedThisLoop.getOrDefault(Input.Buttons.LEFT, false)));
         FunctionalInput.fromButtonJustPress(Input.Buttons.RIGHT).onTrue(new ConditionalRunnable(new PlaceAction(player), ()->!InputScheduler.getInstance().buttonPressedThisLoop.getOrDefault(Input.Buttons.RIGHT, false)));
-
+        player.setTile(tiles[1][1]);
+        player.moveUp();
+        player.moveRight();
+        player.moveLeft();
+        player.moveDown();
     }
 
     public void create_Tile_with_Perlin(float[][] perlinNoise){
