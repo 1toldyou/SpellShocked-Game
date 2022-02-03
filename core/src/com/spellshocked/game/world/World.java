@@ -84,6 +84,11 @@ public class World implements Screen {
         activeStages = new HashMap<>();
     }
 
+    /**
+     * the only way to add new entity to the array
+     * will also set some attributes of the new enitty
+     * @param e entity will add to the list
+     */
     public void addEntity (Entity e){
         e.VOLUME = this.VOLUME; //pass the master volume into entity
         e.set_walk_boundary("Tile", xValue, yValue);
@@ -161,6 +166,10 @@ public class World implements Screen {
         update_QuestGUI();
     }
 
+    /*
+     * print some useful information
+     * override it if don't need it
+     */
     public void print_debug(Entity entity, Tile tile){
         if(entity instanceof PlayerEntity){
             System.out.println("X: "+tile.xValue+" Y: "+tile.yValue+" Z: "+tile.zValue);
@@ -181,14 +190,12 @@ public class World implements Screen {
         return mouse;
     }
 
+    /**
+     * intente to be override
+     */
     public void update_QuestGUI(){
         Spellshocked.getInstance().questGUI.dummy_text.setText("Frame since started: " + timeCount);
         timeCount++;
-    }
-
-    @Override
-    public void resize(int width, int height) {
-
     }
 
     @Override

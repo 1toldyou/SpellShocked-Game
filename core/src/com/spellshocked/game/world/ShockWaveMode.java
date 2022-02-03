@@ -12,7 +12,6 @@ import com.spellshocked.game.entity.Entity;
 import com.spellshocked.game.entity.PlayerEntity;
 import com.spellshocked.game.entity.SkeletonEntity;
 import com.spellshocked.game.entity.SlimeEntity;
-import com.spellshocked.game.gui.BlockInventoryGUI;
 import com.spellshocked.game.gui.ClickGUI;
 import com.spellshocked.game.input.ConditionalRunnable;
 import com.spellshocked.game.input.FunctionalInput;
@@ -69,7 +68,7 @@ public class ShockWaveMode extends World{
         startTime = System.currentTimeMillis();
         score_Label = new TextButton(String.format("%03d", worldTimer), new Skin(Gdx.files.internal("pixthulhu/skin/pixthulhu-ui.json")));
         score_Label.getLabel().setFontScale(0.5f, 0.5f);
-        score_Label.setSize(140,70);
+        score_Label.setSize(140,70); //he bare-minimum, smaller than this will cause display error
 //        stage.addActor(score_Label);
         activeStages.put(stage, true);
 
@@ -235,10 +234,10 @@ public class ShockWaveMode extends World{
         else {
             score_counter += 100;
             raid_counter = 0;
-            wave(1);
+            initialize_new_wave(1);
         }
 
-
+        // draw the health bar
         super.spriteBatch.draw(healthBarTexture, orthographicCamera.position.x-Gdx.graphics.getWidth()/6f,
                     orthographicCamera.position.y-orthographicCamera.zoom*-400-Gdx.graphics.getHeight()/25f,
                     (healthBarTexture.getWidth()* player.health)/40, healthBarTexture.getHeight()/4f);
@@ -246,6 +245,7 @@ public class ShockWaveMode extends World{
                 orthographicCamera.position.y-orthographicCamera.zoom*-400-Gdx.graphics.getHeight()/25f,
                 (healthBarTexture.getWidth())/4f, healthBarTexture.getHeight()/4f);
 
+        // draw the raid bar
         super.spriteBatch.draw(healthBarTexture, orthographicCamera.position.x+Gdx.graphics.getWidth()/6f-healthBarTexture.getWidth()/4f,
                 orthographicCamera.position.y-orthographicCamera.zoom*-400-Gdx.graphics.getHeight()/25f,
                 (healthBarTexture.getWidth()*raid_counter)/4, healthBarTexture.getHeight()/4f);
@@ -256,6 +256,8 @@ public class ShockWaveMode extends World{
         score_Label.setPosition(orthographicCamera.position.x-score_Label.getWidth()/2, orthographicCamera.position.y-orthographicCamera.zoom*-400-Gdx.graphics.getHeight()/15f);
         score_Label.draw(super.spriteBatch, 1f);
         spriteBatch.end();
+
+        // adjust player's walk_speed based on what's Tile it on
         if (player.getTile() != null){
             switch (player.getTile().name) {
                 case "grass":
@@ -296,13 +298,13 @@ public class ShockWaveMode extends World{
     @Override
     public void print_debug(Entity entity, Tile tile) {
     }
-    public void wave(int mob_generation_count){
+
+    public void initialize_new_wave(int mob_generation_count){
         wave_counter++;
         int positionX, positionY;
         for (int i = 0; i < mob_generation_count; i++){
             positionX = (int)MathUtils.clamp(player.getTile().xValue + (Math.random() * 20 - 10), 0, xValue);
             positionY = (int) MathUtils.clamp(player.getTile().yValue+ (Math.random() * 20 - 10), 0 ,yValue);
-            //SkeletonEntity monster = new SkeletonEntity();
             addMonster(new SkeletonEntity(), positionX, positionY);
             positionX = (int)MathUtils.clamp(player.getTile().xValue + (Math.random() * 20 - 10), 0, xValue);
             positionY = (int) MathUtils.clamp(player.getTile().yValue+ (Math.random() * 20 - 10), 0 ,yValue);
